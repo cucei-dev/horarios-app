@@ -1,0 +1,76 @@
+Lista todas las clases con sus sechemas de aula, edificio, centro, seccion, materia, profesor y calendario anidados.
+Máximo 100.
+
+http://horarios-api/api/v1/horarios
+calendario_id: integer | null
+centro_id: integer | null
+edificio_id: integer | null
+aula_id: integer | null
+dia_id: integer | null
+skip: integer | null >= 0
+limit: integer | null [1 .. 100] // default 50
+
+{
+  "total": 0,
+  "skip": 0,
+  "limit": 100,
+  "stale": false,
+  "results": [
+    {
+      "_id": "string",
+      "siiapi_id": 1,
+      "aula": {
+        "siiapi_id": 1,
+        "name": "A002",
+        "edificio": {
+          "siiapi_id": 1,
+          "name": "DEDZ1",
+          "centro": {
+            "siiapi_id": 1,
+            "name": "Centro Universitario de Ciencias Exactas e Ingenierías",
+            "siiau_id": "D"
+          }
+        }
+      },
+      "aula_id": 1,
+      "cached_at": "2026-03-11T19:19:20.382Z",
+      "calendario_id": 1,
+      "centro_id": 1,
+      "dia": 1,
+      "edificio_id": 1,
+      "hora_fin": "12:55:00",
+      "hora_inicio": "11:00:00",
+      "seccion": {
+        "siiapi_id": 1,
+        "name": "D01",
+        "nrc": "121218",
+        "cupos": 35,
+        "cupos_disponibles": 2,
+        "periodo_inicio": "2026-01-19T00:00:00.000Z",
+        "periodo_fin": "2026-05-29T00:00:00.000Z",
+        "materia": {
+          "siiapi_id": 1,
+          "name": "ACONDICIONAMIENTO DE BIOSEÑALES Y BIOIMAGENES",
+          "clave": "I7607",
+          "creditos": 8
+        },
+        "profesor": {
+          "siiapi_id": 1,
+          "name": "ROMO VAZQUEZ, REBECA DEL CARMEN"
+        },
+        "centro": {
+          "siiapi_id": 1,
+          "name": "Centro Universitario de Ciencias Exactas e Ingenierías",
+          "siiau_id": "D"
+        },
+        "calendario": {
+          "siiapi_id": 1,
+          "name": "2026 A",
+          "siiau_id": "202610"
+        }
+      },
+      "seccion_id": 1,
+      "sesion": 1
+    }
+  ]
+}

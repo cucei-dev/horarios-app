@@ -6,7 +6,7 @@ interface HorariosParams {
   calendario_id: number
   edificio_id: number
   aula_id?: number
-  dia_id?: number
+  dia?: number
 }
 
 export async function fetchAllHorarios(params: HorariosParams): Promise<Horario[]> {
@@ -20,7 +20,7 @@ export async function fetchAllHorarios(params: HorariosParams): Promise<Horario[
     url.searchParams.set('calendario_id', String(params.calendario_id))
     url.searchParams.set('edificio_id', String(params.edificio_id))
     if (params.aula_id != null) url.searchParams.set('aula_id', String(params.aula_id))
-    if (params.dia_id != null) url.searchParams.set('dia_id', String(params.dia_id))
+    if (params.dia != null) url.searchParams.set('dia', String(params.dia))
     url.searchParams.set('skip', String(skip))
     url.searchParams.set('limit', String(limit))
 

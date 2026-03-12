@@ -1,29 +1,27 @@
 import { useState, useMemo } from 'react'
-import type { Horario, Aula } from '../../types'
 import { DIAS } from '../../types'
+import { useHorarios } from '../../hooks/useHorarios'
 import { ScheduleGrid } from '../../components/Schedule/ScheduleGrid'
 
 interface DayViewProps {
-  horarios: Horario[]
-  aulas: Aula[]
+  calendario_id: number
+  edificio_id: number
 }
 
-export function DayView({ horarios, aulas }: DayViewProps) {
+export function DayView({ calendario_id, edificio_id }: DayViewProps) {
   const [selectedDia, setSelectedDia] = useState<number>(1)
 
-  const filtered = useMemo(
-    () => horarios.filter((h) => h.dia === selectedDia),
-    [horarios, selectedDia]
-  )
+  const { horarios, loading, error } = useHorarios({ calendario_id, edificio_id, dia: selectedDia })
 
-  // Only show aulas that have at least one class this day
   const aulaColumns = useMemo(() => {
-    const idsWithClasses = new Set(filtered.map((h) => h.aula_id))
-    const ordered = aulas
-      .filter((a) => idsWithClasses.has(a.id))
-      .sort((a, b) => a.name.localeCompare(b.name))
-    return ordered.map((a) => ({ id: a.id, label: a.name }))
-  }, [filtered, aulas])
+    const seen = new Map<number, string>()
+    for (const h of horarios) {
+      if (!seen.has(h.aula_id)) seen.set(h.aula_id, h.aula.name)
+    }
+    return [...seen.entries()]
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .map(([id, label]) => ({ id, label }))
+  }, [horarios])
 
   return (
     <div className="flex flex-col gap-4">
@@ -43,12 +41,25 @@ export function DayView({ horarios, aulas }: DayViewProps) {
         ))}
       </div>
 
-      <ScheduleGrid
-        columns={aulaColumns}
-        horarios={filtered}
-        getColumnId={(h) => h.aula_id}
-        emptyMessage={`No hay clases el ${DIAS.find((d) => d.id === selectedDia)?.name}.`}
-      />
+      {loading ? (
+        <div className="flex items-center justify-center h-40 gap-3">
+          <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-[#94a3b8] text-sm">Cargando...</span>
+        </div>
+      ) : error ? (
+        <div className="bg-red-900/20 border border-red-500/40 rounded-xl px-6 py-4 text-red-400 text-sm">
+          <p className="font-medium mb-1">Error al cargar los horarios</p>
+          <p className="text-red-500/80 text-xs">{error}</p>
+        </div>
+      ) : (
+        <ScheduleGrid
+          columns={aulaColumns}
+          horarios={horarios}
+          getColumnId={(h) => h.aula_id}
+          emptyMessage={`No hay clases el ${DIAS.find((d) => d.id === selectedDia)?.name}.`}
+        />
+      )}
     </div>
   )
 }
+

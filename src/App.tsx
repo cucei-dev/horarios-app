@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useCalendarios } from './hooks/useCalendarios'
 import { useCentros } from './hooks/useCentros'
-import { useHorarios } from './hooks/useHorarios'
 import { fetchAulas } from './api/siiapi'
 import { Filters } from './components/Filters/Filters'
 import { DayView } from './views/DayView/DayView'
@@ -23,11 +22,6 @@ function App() {
     loadedFor: null,
   })
 
-  const { horarios, loading: loadingHorarios, error } = useHorarios({
-    calendario_id: selectedCalendario,
-    edificio_id: selectedEdificio,
-  })
-
   useEffect(() => {
     if (!selectedEdificio) return
     fetchAulas(selectedEdificio)
@@ -37,7 +31,7 @@ function App() {
 
   const currentAulas = selectedEdificio ? aulasState.aulas : []
   const loadingAulas = !!(selectedEdificio && aulasState.loadedFor !== selectedEdificio)
-  const isLoading = loadingCals || loadingCentros || loadingHorarios || loadingAulas
+  const isLoading = loadingCals || loadingCentros || loadingAulas
 
   return (
     <div className="min-h-screen bg-[#0f1117] text-[#e2e8f0] flex flex-col">
@@ -80,7 +74,7 @@ function App() {
           />
 
           {/* View toggle */}
-          {selectedEdificio && (
+          {selectedEdificio && !loadingAulas && (
             <div className="flex gap-1 self-start bg-[#0f1117] rounded-lg p-1 border border-[#2e3347]">
               {(['day', 'aula'] as ViewMode[]).map((mode) => (
                 <button
@@ -115,22 +109,22 @@ function App() {
                 Selecciona un calendario, centro universitario y edificio para ver los horarios.
               </p>
             </div>
-          ) : isLoading ? (
+          ) : loadingAulas ? (
             <div className="flex items-center justify-center h-64 gap-3">
               <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-              <span className="text-[#94a3b8] text-sm">Cargando horarios...</span>
-            </div>
-          ) : error ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="bg-red-900/20 border border-red-500/40 rounded-xl px-6 py-4 text-red-400 text-sm max-w-md text-center">
-                <p className="font-medium mb-1">Error al cargar los horarios</p>
-                <p className="text-red-500/80 text-xs">{error}</p>
-              </div>
+              <span className="text-[#94a3b8] text-sm">Cargando aulas...</span>
             </div>
           ) : viewMode === 'day' ? (
-            <DayView horarios={horarios} aulas={currentAulas} />
+            <DayView
+              calendario_id={selectedCalendario!}
+              edificio_id={selectedEdificio}
+            />
           ) : (
-            <AulaView horarios={horarios} aulas={currentAulas} />
+            <AulaView
+              calendario_id={selectedCalendario!}
+              edificio_id={selectedEdificio}
+              aulas={currentAulas}
+            />
           )}
         </div>
       </main>
@@ -139,3 +133,5 @@ function App() {
 }
 
 export default App
+
+

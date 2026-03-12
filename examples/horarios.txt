@@ -6,7 +6,7 @@ calendario_id: integer | null
 centro_id: integer | null
 edificio_id: integer | null
 aula_id: integer | null
-dia_id: integer | null
+dia: integer | null
 skip: integer | null >= 0
 limit: integer | null [1 .. 100] // default 50
 

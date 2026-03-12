@@ -12,6 +12,8 @@ const selectClass =
   'bg-[#22263a] border border-[#2e3347] text-[#e2e8f0] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition-colors appearance-none cursor-pointer min-w-[160px]'
 
 export function AulaView({ horarios, aulas }: AulaViewProps) {
+  aulas.sort((a, b) => a.name.localeCompare(b.name))
+
   const [selectedAula, setSelectedAula] = useState<number | null>(
     aulas.length > 0 ? aulas[0].id : null
   )

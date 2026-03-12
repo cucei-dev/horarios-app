@@ -23,7 +23,7 @@ export function AulaView({ calendario_id, edificio_id, aulas }: AulaViewProps) {
     sortedAulas.length > 0 ? sortedAulas[0].id : null
   )
 
-  const { horarios, loading, error } = useHorarios({
+  const { data: horarios = [], isLoading: loading, error } = useHorarios({
     calendario_id,
     edificio_id,
     aula_id: selectedAula,
@@ -35,6 +35,8 @@ export function AulaView({ calendario_id, edificio_id, aulas }: AulaViewProps) {
   }, [horarios])
 
   const aulaName = sortedAulas.find((a) => a.id === selectedAula)?.name ?? ''
+
+  const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
 
   return (
     <div className="flex flex-col gap-4">
@@ -67,7 +69,7 @@ export function AulaView({ calendario_id, edificio_id, aulas }: AulaViewProps) {
       ) : error ? (
         <div className="bg-red-900/20 border border-red-500/40 rounded-xl px-6 py-4 text-red-400 text-sm">
           <p className="font-medium mb-1">Error al cargar los horarios</p>
-          <p className="text-red-500/80 text-xs">{error}</p>
+          <p className="text-red-500/80 text-xs">{errorMessage}</p>
         </div>
       ) : (
         <ScheduleGrid
